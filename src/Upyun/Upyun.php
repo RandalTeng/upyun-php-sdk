@@ -4,6 +4,8 @@
  */
 namespace Upyun;
 
+use GuzzleHttp\Psr7\Utils;
+use Psr\Http\Message\StreamInterface;
 use Upyun\Api\Rest;
 
 use GuzzleHttp\Client;
@@ -153,8 +155,15 @@ class Upyun
 
 
         if (! isset($params['x-upyun-list-iter'])) {
-            if (is_resource($saveHandler)) {
-                Psr7\copy_to_stream($response->getBody(), Psr7\stream_for($saveHandler));
+            if ($saveHandler instanceof StreamInterface) {
+                // 如果是 Psr/Http/Message/StreamInterface，直接拷贝
+                Utils::copyToStream($response->getBody(), $saveHandler);
+                return true;
+            } elseif (is_resource($saveHandler)) {
+                // 这里会把原始 resource 资源关闭，需要手动重新打开才能使用，
+                // 因为 GuzzleHttp/psr7/Stream 实现，对象析构时自动关闭关联 resource。
+                // 推荐直接传递 Psr/Http/Message/StreamInterface，这样只需要打开一次文件。
+                Utils::copyToStream($response->getBody(), Utils::streamFor($saveHandler));
                 return true;
             } else {
                 return $response->getBody()->getContents();
