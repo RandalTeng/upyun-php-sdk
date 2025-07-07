@@ -1,3 +1,21 @@
+# !!重要说明
+
+因为又拍云官方SDK不再维护，这里简单fork一个仓库自用，有需要的话也可以拉取这个。
+
+```shell
+composer require randal-teng/upyun-php-sdk
+```
+
+## 简单修复了些问题
+
+1. 修复 `Upyun::read` 方法接收 `saveHandler` 自动关闭原资源的问题
+
+    - 添加 handler 类型判断，允许传递 `Psr\Http\Message\StreamInterface` 实例
+    - 原因是原本只接收 `resource` 类型，函数内部又使用 `GuzzleHttp\Psr7\Utils::streamFor` 函数，
+      该类实例析构时，会自动关闭关联的资源句柄。
+      - 使用的废弃方法 `GuzzleHttp\Psr7\stream_for`，内部直接调用上面的工具函数，没区别
+    - 修改后，推荐直接传递 `Psr\Http\Message\StreamInterface` 实例。
+
 # 又拍云 SDK for PHPer
 [![Build Status](https://scrutinizer-ci.com/g/upyun/php-sdk/badges/build.png?b=master)](https://scrutinizer-ci.com/g/upyun/php-sdk/build-status/master) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/upyun/php-sdk/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/upyun/php-sdk/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/upyun/php-sdk/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/upyun/php-sdk/?branch=master) 
 

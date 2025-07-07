@@ -1,6 +1,6 @@
 {
-    "name": "upyun/sdk",
-    "description": "UPYUN sdk for php",
+    "name": "randal-teng/upyun-php-sdk",
+    "description": "UPYUN sdk for php, forked by RandalTeng.",
     "keywords": ["UPYUN", "sdk"],
     "type": "library",
     "minimum-stability": "stable",
